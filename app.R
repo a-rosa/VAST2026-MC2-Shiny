@@ -272,7 +272,7 @@ ui <- dashboardPage(
           color: #e2e8f0;
         }
         .callout-important {
-          background-color: #2d1b1b;
+          background-color: #4F2424;
           border-left: 4px solid #D9534F;
           padding: 12px 16px;
           border-radius: 4px;
@@ -291,6 +291,23 @@ ui <- dashboardPage(
           padding: 2px 6px;
           border-radius: 3px;
           font-size: 12px;
+        }
+        table.dataTable tbody td {
+          color: #e2e8f0 !important;
+          background-color: #16213e !important;
+        }
+        table.dataTable thead th {
+          color: #e2e8f0 !important;
+          background-color: #0f3460 !important;
+        }
+        table.dataTable tbody tr:hover td {
+          background-color: #1e3a5f !important;
+        }
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+          color: #e2e8f0 !important;
+        }
+        .dataTables_wrapper .dataTables_info {
+          color: #94a3b8 !important;
         }
       "))
     ),
@@ -543,7 +560,8 @@ server <- function(input, output, session) {
     
     anomaly_dates <- tibble(
       date  = as.Date(c("2046-05-10", "2046-05-11", "2046-05-17")),
-      label = c("HiddenOrca", "MellowOtter", "SwiftWren")
+      label = c("HiddenOrca", "MellowOtter", "SwiftWren"),
+      y_offset = c(0.95, 0.78, 0.95)
     )
     
     p <- ggplot(daily_vol, aes(x = date, y = total)) +
@@ -551,10 +569,9 @@ server <- function(input, output, session) {
       geom_line(colour = "#5C85D6", linewidth = 0.7) +
       geom_vline(data = anomaly_dates, aes(xintercept = as.numeric(date)),
                  colour = "#D9534F", linetype = "dashed", linewidth = 0.8) +
-      geom_label(data = anomaly_dates,
-                 aes(x = date, y = max(daily_vol$total) * 0.9, label = label),
-                 colour = "#D9534F", fill = "#1a1a2e", size = 3,
-                 label.size = 0.2) +
+      geom_text(data = anomaly_dates,
+                aes(x = date, y = max(daily_vol$total) * y_offset, label = label),
+                colour = "#D9534F", size = 3) +
       scale_x_date(date_breaks = "2 weeks", date_labels = "%b %d") +
       scale_y_continuous(labels = comma) +
       labs(x = NULL, y = "Events per day") +
@@ -643,7 +660,11 @@ server <- function(input, output, session) {
     ggplotly(p, tooltip = "text") %>%
       layout(paper_bgcolor = "#16213e", plot_bgcolor = "#16213e",
              font = list(color = "#e2e8f0"),
-             margin = list(l = 130, r = 20, t = 20, b = 80))
+             margin = list(l = 130, r = 20, t = 20, b = 80),
+             legend = list(title = list(text = "Department", font = list(color = "#e2e8f0")),
+                           orientation = "h", 
+                           x = 0.5, xanchor = "center",
+                           y = -0.40, yanchor = "top"))
   })
   
   output$plot_hour_dist <- renderPlotly({
@@ -681,7 +702,10 @@ server <- function(input, output, session) {
     ggplotly(p, tooltip = c("x", "y", "fill")) %>%
       layout(paper_bgcolor = "#16213e", plot_bgcolor = "#16213e",
              font = list(color = "#e2e8f0"),
-             margin = list(l = 60, r = 20, t = 20, b = 80))
+             margin = list(l = 130, r = 20, t = 20, b = 70),
+             legend = list(orientation = "h", 
+                           x = 0.5, xanchor = "center",
+                           y = -0.30, yanchor = "top"))
   })
   
   # ---------------------------------------------------------------------------
@@ -794,7 +818,10 @@ server <- function(input, output, session) {
     ggplotly(p, tooltip = c("x", "y", "fill")) %>%
       layout(paper_bgcolor = "#16213e", plot_bgcolor = "#16213e",
              font = list(color = "#e2e8f0"),
-             margin = list(l = 60, r = 20, t = 20, b = 80))
+             margin = list(l = 60, r = 20, t = 20, b = 80),
+             legend = list(orientation = "h", 
+                           x = 0.5, xanchor = "center",
+                           y = -0.40, yanchor = "top"))
   })
   
 }
