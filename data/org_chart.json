@@ -1,0 +1,764 @@
+{
+   "directed": true,
+   "multigraph": false,
+   "graph": {
+      "name": "Tenant Thread Organization Tree"
+   },
+   "nodes": [
+      {
+         "id": "company:tenant_thread",
+         "label": "Tenant Thread",
+         "type": "company"
+      },
+      {
+         "id": "department:executive_suite",
+         "label": "Executive Suite",
+         "type": "department"
+      },
+      {
+         "id": "department:products",
+         "label": "Products",
+         "type": "department"
+      },
+      {
+         "id": "department:human_resources",
+         "label": "Human Resources",
+         "type": "department"
+      },
+      {
+         "id": "department:legal",
+         "label": "Legal",
+         "type": "department"
+      },
+      {
+         "id": "department:information_technologies",
+         "label": "Information Technologies",
+         "type": "department"
+      },
+      {
+         "id": "department:customer_support",
+         "label": "Customer Support",
+         "type": "department"
+      },
+      {
+         "id": "team:residential_app",
+         "label": "Residential App",
+         "type": "team"
+      },
+      {
+         "id": "team:property_ops_console",
+         "label": "Property Ops Console",
+         "type": "team"
+      },
+      {
+         "id": "team:analytics_suite",
+         "label": "Analytics Suite",
+         "type": "team"
+      },
+      {
+         "id": "team:integrations",
+         "label": "Integrations",
+         "type": "team"
+      },
+      {
+         "id": "team:hiring",
+         "label": "Hiring",
+         "type": "team"
+      },
+      {
+         "id": "team:benefits",
+         "label": "Benefits",
+         "type": "team"
+      },
+      {
+         "id": "team:professional_development",
+         "label": "Professional Development",
+         "type": "team"
+      },
+      {
+         "id": "team:ip",
+         "label": "IP",
+         "type": "team"
+      },
+      {
+         "id": "team:mergers_and_acquisitions",
+         "label": "Mergers and Acquisitions",
+         "type": "team"
+      },
+      {
+         "id": "team:corporate_contracts",
+         "label": "Corporate Contracts",
+         "type": "team"
+      },
+      {
+         "id": "team:client_contracts",
+         "label": "Client Contracts",
+         "type": "team"
+      },
+      {
+         "id": "team:finance",
+         "label": "Finance",
+         "type": "team"
+      },
+      {
+         "id": "team:ai_systems",
+         "label": "AI Systems",
+         "type": "team"
+      },
+      {
+         "id": "team:infrastructure",
+         "label": "Infrastructure",
+         "type": "team"
+      },
+      {
+         "id": "team:helpdesk",
+         "label": "Helpdesk",
+         "type": "team"
+      },
+      {
+         "id": "team:phone_center",
+         "label": "Phone Center",
+         "type": "team"
+      },
+      {
+         "id": "team:billing",
+         "label": "Billing",
+         "type": "team"
+      },
+      {
+         "id": "team:concierge",
+         "label": "Concierge",
+         "type": "team"
+      },
+      {
+         "id": "team:public_relations",
+         "label": "Public Relations",
+         "type": "team"
+      },
+      {
+         "id": "person:liam_anchor",
+         "label": "Liam Anchor",
+         "type": "person",
+         "title": "CEO"
+      },
+      {
+         "id": "person:emma_harbor",
+         "label": "Emma Harbor",
+         "type": "person",
+         "title": "CFO"
+      },
+      {
+         "id": "person:noah_mariner",
+         "label": "Noah Mariner",
+         "type": "person",
+         "title": "COO"
+      },
+      {
+         "id": "person:olivia_keel",
+         "label": "Olivia Keel",
+         "type": "person",
+         "title": "Department Lead"
+      },
+      {
+         "id": "person:william_rudder",
+         "label": "William Rudder",
+         "type": "person"
+      },
+      {
+         "id": "person:ava_tiller",
+         "label": "Ava Tiller",
+         "type": "person"
+      },
+      {
+         "id": "person:james_stern",
+         "label": "James Stern",
+         "type": "person"
+      },
+      {
+         "id": "person:sophia_beacon",
+         "label": "Sophia Beacon",
+         "type": "person"
+      },
+      {
+         "id": "person:benjamin_mooring",
+         "label": "Benjamin Mooring",
+         "type": "person"
+      },
+      {
+         "id": "person:mia_fender",
+         "label": "Mia Fender",
+         "type": "person"
+      },
+      {
+         "id": "person:lucas_compass",
+         "label": "Lucas Compass",
+         "type": "person"
+      },
+      {
+         "id": "person:charlotte_current",
+         "label": "Charlotte Current",
+         "type": "person"
+      },
+      {
+         "id": "person:henry_sail",
+         "label": "Henry Sail",
+         "type": "person"
+      },
+      {
+         "id": "person:amelia_skiff",
+         "label": "Amelia Skiff",
+         "type": "person"
+      },
+      {
+         "id": "person:alexander_jetty",
+         "label": "Alexander Jetty",
+         "type": "person"
+      },
+      {
+         "id": "person:evelyn_dock",
+         "label": "Evelyn Dock",
+         "type": "person"
+      },
+      {
+         "id": "person:michael_capstan",
+         "label": "Michael Capstan",
+         "type": "person",
+         "title": "Department Lead"
+      },
+      {
+         "id": "person:harper_oar",
+         "label": "Harper Oar",
+         "type": "person"
+      },
+      {
+         "id": "person:daniel_gangway",
+         "label": "Daniel Gangway",
+         "type": "person"
+      },
+      {
+         "id": "person:ella_pilot",
+         "label": "Ella Pilot",
+         "type": "person"
+      },
+      {
+         "id": "person:matthew_tide",
+         "label": "Matthew Tide",
+         "type": "person"
+      },
+      {
+         "id": "person:scarlett_wharf",
+         "label": "Scarlett Wharf",
+         "type": "person"
+      },
+      {
+         "id": "person:david_breakwater",
+         "label": "David Breakwater",
+         "type": "person",
+         "title": "Department Lead"
+      },
+      {
+         "id": "person:avery_sextant",
+         "label": "Avery Sextant",
+         "type": "person"
+      },
+      {
+         "id": "person:joseph_buoy",
+         "label": "Joseph Buoy",
+         "type": "person"
+      },
+      {
+         "id": "person:abigail_spinnaker",
+         "label": "Abigail Spinnaker",
+         "type": "person"
+      },
+      {
+         "id": "person:sebastian_cutter",
+         "label": "Sebastian Cutter",
+         "type": "person"
+      },
+      {
+         "id": "person:emily_ferry",
+         "label": "Emily Ferry",
+         "type": "person"
+      },
+      {
+         "id": "person:jack_helm",
+         "label": "Jack Helm",
+         "type": "person"
+      },
+      {
+         "id": "person:grace_lifeboat",
+         "label": "Grace Lifeboat",
+         "type": "person"
+      },
+      {
+         "id": "person:samuel_gull",
+         "label": "Samuel Gull",
+         "type": "person"
+      },
+      {
+         "id": "person:chloe_ballast",
+         "label": "Chloe Ballast",
+         "type": "person",
+         "title": "Department Lead"
+      },
+      {
+         "id": "person:levi_signal",
+         "label": "Levi Signal",
+         "type": "person"
+      },
+      {
+         "id": "person:victoria_rigging",
+         "label": "Victoria Rigging",
+         "type": "person"
+      },
+      {
+         "id": "person:owen_hatch",
+         "label": "Owen Hatch",
+         "type": "person"
+      },
+      {
+         "id": "person:lily_anchorline",
+         "label": "Lily Anchorline",
+         "type": "person"
+      },
+      {
+         "id": "person:gabriel_sonar",
+         "label": "Gabriel Sonar",
+         "type": "person"
+      },
+      {
+         "id": "person:zoey_drydock",
+         "label": "Zoey Drydock",
+         "type": "person"
+      },
+      {
+         "id": "person:john_windward",
+         "label": "John Windward",
+         "type": "person",
+         "title": "Department Lead"
+      },
+      {
+         "id": "person:nora_bulkhead",
+         "label": "Nora Bulkhead",
+         "type": "person"
+      },
+      {
+         "id": "person:julian_seaway",
+         "label": "Julian Seaway",
+         "type": "person"
+      },
+      {
+         "id": "person:hannah_starboard",
+         "label": "Hannah Starboard",
+         "type": "person"
+      },
+      {
+         "id": "person:isaac_mast",
+         "label": "Isaac Mast",
+         "type": "person"
+      },
+      {
+         "id": "person:audrey_portside",
+         "label": "Audrey Portside",
+         "type": "person"
+      },
+      {
+         "id": "person:christopher_jettyline",
+         "label": "Christopher Jettyline",
+         "type": "person"
+      },
+      {
+         "id": "person:layla_channel",
+         "label": "Layla Channel",
+         "type": "person"
+      },
+      {
+         "id": "person:anthony_reef",
+         "label": "Anthony Reef",
+         "type": "person"
+      },
+      {
+         "id": "person:aria_towline",
+         "label": "Aria Towline",
+         "type": "person"
+      },
+      {
+         "id": "person:dylan_hawser",
+         "label": "Dylan Hawser",
+         "type": "person"
+      }
+   ],
+   "edges": [
+      {
+         "source": "company:tenant_thread",
+         "target": "department:executive_suite",
+         "relation": "contains"
+      },
+      {
+         "source": "company:tenant_thread",
+         "target": "department:products",
+         "relation": "contains"
+      },
+      {
+         "source": "company:tenant_thread",
+         "target": "department:human_resources",
+         "relation": "contains"
+      },
+      {
+         "source": "company:tenant_thread",
+         "target": "department:legal",
+         "relation": "contains"
+      },
+      {
+         "source": "company:tenant_thread",
+         "target": "department:information_technologies",
+         "relation": "contains"
+      },
+      {
+         "source": "company:tenant_thread",
+         "target": "department:customer_support",
+         "relation": "contains"
+      },
+      {
+         "source": "department:products",
+         "target": "team:residential_app",
+         "relation": "contains"
+      },
+      {
+         "source": "department:products",
+         "target": "team:property_ops_console",
+         "relation": "contains"
+      },
+      {
+         "source": "department:products",
+         "target": "team:analytics_suite",
+         "relation": "contains"
+      },
+      {
+         "source": "department:products",
+         "target": "team:integrations",
+         "relation": "contains"
+      },
+      {
+         "source": "department:human_resources",
+         "target": "team:hiring",
+         "relation": "contains"
+      },
+      {
+         "source": "department:human_resources",
+         "target": "team:benefits",
+         "relation": "contains"
+      },
+      {
+         "source": "department:human_resources",
+         "target": "team:professional_development",
+         "relation": "contains"
+      },
+      {
+         "source": "department:legal",
+         "target": "team:ip",
+         "relation": "contains"
+      },
+      {
+         "source": "department:legal",
+         "target": "team:mergers_and_acquisitions",
+         "relation": "contains"
+      },
+      {
+         "source": "department:legal",
+         "target": "team:corporate_contracts",
+         "relation": "contains"
+      },
+      {
+         "source": "department:legal",
+         "target": "team:client_contracts",
+         "relation": "contains"
+      },
+      {
+         "source": "department:legal",
+         "target": "team:finance",
+         "relation": "contains"
+      },
+      {
+         "source": "department:information_technologies",
+         "target": "team:ai_systems",
+         "relation": "contains"
+      },
+      {
+         "source": "department:information_technologies",
+         "target": "team:infrastructure",
+         "relation": "contains"
+      },
+      {
+         "source": "department:information_technologies",
+         "target": "team:helpdesk",
+         "relation": "contains"
+      },
+      {
+         "source": "department:customer_support",
+         "target": "team:phone_center",
+         "relation": "contains"
+      },
+      {
+         "source": "department:customer_support",
+         "target": "team:billing",
+         "relation": "contains"
+      },
+      {
+         "source": "department:customer_support",
+         "target": "team:concierge",
+         "relation": "contains"
+      },
+      {
+         "source": "department:customer_support",
+         "target": "team:public_relations",
+         "relation": "contains"
+      },
+      {
+         "source": "department:executive_suite",
+         "target": "person:liam_anchor",
+         "relation": "contains"
+      },
+      {
+         "source": "department:executive_suite",
+         "target": "person:emma_harbor",
+         "relation": "contains"
+      },
+      {
+         "source": "department:executive_suite",
+         "target": "person:noah_mariner",
+         "relation": "contains"
+      },
+      {
+         "source": "department:products",
+         "target": "person:olivia_keel",
+         "relation": "led_by"
+      },
+      {
+         "source": "team:residential_app",
+         "target": "person:william_rudder",
+         "relation": "contains"
+      },
+      {
+         "source": "team:residential_app",
+         "target": "person:ava_tiller",
+         "relation": "contains"
+      },
+      {
+         "source": "team:residential_app",
+         "target": "person:james_stern",
+         "relation": "contains"
+      },
+      {
+         "source": "team:property_ops_console",
+         "target": "person:sophia_beacon",
+         "relation": "contains"
+      },
+      {
+         "source": "team:property_ops_console",
+         "target": "person:benjamin_mooring",
+         "relation": "contains"
+      },
+      {
+         "source": "team:property_ops_console",
+         "target": "person:mia_fender",
+         "relation": "contains"
+      },
+      {
+         "source": "team:analytics_suite",
+         "target": "person:lucas_compass",
+         "relation": "contains"
+      },
+      {
+         "source": "team:analytics_suite",
+         "target": "person:charlotte_current",
+         "relation": "contains"
+      },
+      {
+         "source": "team:analytics_suite",
+         "target": "person:henry_sail",
+         "relation": "contains"
+      },
+      {
+         "source": "team:integrations",
+         "target": "person:amelia_skiff",
+         "relation": "contains"
+      },
+      {
+         "source": "team:integrations",
+         "target": "person:alexander_jetty",
+         "relation": "contains"
+      },
+      {
+         "source": "team:integrations",
+         "target": "person:evelyn_dock",
+         "relation": "contains"
+      },
+      {
+         "source": "department:human_resources",
+         "target": "person:michael_capstan",
+         "relation": "led_by"
+      },
+      {
+         "source": "team:hiring",
+         "target": "person:harper_oar",
+         "relation": "contains"
+      },
+      {
+         "source": "team:hiring",
+         "target": "person:daniel_gangway",
+         "relation": "contains"
+      },
+      {
+         "source": "team:benefits",
+         "target": "person:ella_pilot",
+         "relation": "contains"
+      },
+      {
+         "source": "team:benefits",
+         "target": "person:matthew_tide",
+         "relation": "contains"
+      },
+      {
+         "source": "team:professional_development",
+         "target": "person:scarlett_wharf",
+         "relation": "contains"
+      },
+      {
+         "source": "department:legal",
+         "target": "person:david_breakwater",
+         "relation": "led_by"
+      },
+      {
+         "source": "team:ip",
+         "target": "person:avery_sextant",
+         "relation": "contains"
+      },
+      {
+         "source": "team:mergers_and_acquisitions",
+         "target": "person:joseph_buoy",
+         "relation": "contains"
+      },
+      {
+         "source": "team:corporate_contracts",
+         "target": "person:abigail_spinnaker",
+         "relation": "contains"
+      },
+      {
+         "source": "team:corporate_contracts",
+         "target": "person:sebastian_cutter",
+         "relation": "contains"
+      },
+      {
+         "source": "team:client_contracts",
+         "target": "person:emily_ferry",
+         "relation": "contains"
+      },
+      {
+         "source": "team:client_contracts",
+         "target": "person:jack_helm",
+         "relation": "contains"
+      },
+      {
+         "source": "team:finance",
+         "target": "person:grace_lifeboat",
+         "relation": "contains"
+      },
+      {
+         "source": "team:finance",
+         "target": "person:samuel_gull",
+         "relation": "contains"
+      },
+      {
+         "source": "department:information_technologies",
+         "target": "person:chloe_ballast",
+         "relation": "led_by"
+      },
+      {
+         "source": "team:ai_systems",
+         "target": "person:levi_signal",
+         "relation": "contains"
+      },
+      {
+         "source": "team:ai_systems",
+         "target": "person:victoria_rigging",
+         "relation": "contains"
+      },
+      {
+         "source": "team:infrastructure",
+         "target": "person:owen_hatch",
+         "relation": "contains"
+      },
+      {
+         "source": "team:infrastructure",
+         "target": "person:lily_anchorline",
+         "relation": "contains"
+      },
+      {
+         "source": "team:helpdesk",
+         "target": "person:gabriel_sonar",
+         "relation": "contains"
+      },
+      {
+         "source": "team:helpdesk",
+         "target": "person:zoey_drydock",
+         "relation": "contains"
+      },
+      {
+         "source": "department:customer_support",
+         "target": "person:john_windward",
+         "relation": "led_by"
+      },
+      {
+         "source": "team:phone_center",
+         "target": "person:nora_bulkhead",
+         "relation": "contains"
+      },
+      {
+         "source": "team:phone_center",
+         "target": "person:julian_seaway",
+         "relation": "contains"
+      },
+      {
+         "source": "team:phone_center",
+         "target": "person:hannah_starboard",
+         "relation": "contains"
+      },
+      {
+         "source": "team:billing",
+         "target": "person:isaac_mast",
+         "relation": "contains"
+      },
+      {
+         "source": "team:billing",
+         "target": "person:audrey_portside",
+         "relation": "contains"
+      },
+      {
+         "source": "team:concierge",
+         "target": "person:christopher_jettyline",
+         "relation": "contains"
+      },
+      {
+         "source": "team:concierge",
+         "target": "person:layla_channel",
+         "relation": "contains"
+      },
+      {
+         "source": "team:public_relations",
+         "target": "person:anthony_reef",
+         "relation": "contains"
+      },
+      {
+         "source": "team:public_relations",
+         "target": "person:aria_towline",
+         "relation": "contains"
+      },
+      {
+         "source": "team:public_relations",
+         "target": "person:dylan_hawser",
+         "relation": "contains"
+      }
+   ]
+}
