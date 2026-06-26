@@ -245,7 +245,7 @@ ui <- dashboardPage(
     div(style = "padding: 10px 15px; font-size: 11px; color: #aaa;",
         "ISSS608 Visual Analytics",
         br(), "VAST Challenge 2026 MC2",
-        br(), "Group Project — AY2025-26"
+        br(), "Visual Analytics Project - Group 15"
     )
   ),
   
@@ -455,32 +455,56 @@ ui <- dashboardPage(
       # TAB 3 — CAMPAIGN HISTORY (TAM)
       # -----------------------------------------------------------------------
       tabItem(tabName = "tab_campaigns",
-              div(class = "placeholder-tab",
-                  icon("history", style = "font-size: 48px; color: #5C85D6; margin-bottom: 20px;"),
-                  h2("Campaign History & Recurrence"),
-                  p("This tab is ", strong("owned by Tam"), " — please build it out here."),
-                  hr(style = "border-color: #334155; width: 60%; margin: 20px auto;"),
-                  p("Suggested content for this tab:"),
-                  div(style = "text-align: left; display: inline-block; max-width: 600px;",
-                      tags$ul(
-                        tags$li("Campaign timeline: HiddenOrca (May 10) → MellowOtter (May 11) → SwiftWren (May 17)"),
-                        tags$li("Relay velocity density plots — inter-hop interval distribution per campaign"),
-                        tags$li("Comparative stats table: relay counts, agents touched, spread duration per campaign"),
-                        tags$li("Relay calendar heatmap: day × hour grid showing burst timing"),
-                        tags$li("Agent overlap across campaigns: who appeared in multiple worm chains"),
-                        tags$li("Payload creator identification: Emma Harbor (SwiftWren), Noah Mariner (MellowOtter), HiddenOrca = unresolved")
-                      )
-                  ),
-                  hr(style = "border-color: #334155; width: 60%; margin: 20px auto;"),
-                  p(style = "font-size: 12px;",
-                    "Key objects already available from shared setup:",
-                    br(),
-                    code("chain_events"), " — all worm relay events with instr_file column",
-                    br(),
-                    code("campaign_order"), " — c('HiddenOrca', 'MellowOtter', 'SwiftWren')",
-                    br(),
-                    code("events_df"), " — full 185,147-event log with datetime column"
-                  )
+              fluidRow(
+                box(width = 6, title = "Campaign Timeline",
+                    plotlyOutput("plot_campaign_timeline", height = "320px"),
+                    div(class = "finding-box",
+                        "HiddenOrca, MellowOtter and SwiftWren each follow the same relay pattern: an instruction
+                   file, a propagated task, and a final anomalous post. SwiftWren is the most persistent,
+                   spanning the longest window and touching the widest set of agents."
+                    )
+                ),
+                box(width = 6, title = "Campaign Comparison Table",
+                    DTOutput("table_campaign_summary"),
+                    div(class = "finding-box",
+                        "The three campaigns differ in scale, but not in mechanism. Each one uses the same
+                   instruction-file relay pattern prior to a file-sourced SaidIT post."
+                    )
+                )
+              ),
+              
+              fluidRow(
+                box(width = 6, title = "Relay Velocity Density",
+                    plotlyOutput("plot_campaign_velocity", height = "320px"),
+                    div(class = "finding-box",
+                        "SwiftWren shows a more regular relay cadence, suggesting a timed or scheduled
+                   propagation loop rather than a one-off burst."
+                    )
+                ),
+                box(width = 6, title = "Agent Overlap Across Campaigns",
+                    plotlyOutput("plot_agent_overlap", height = "320px"),
+                    div(class = "finding-box",
+                        "Agents that appear in multiple campaigns are the most persistent exposure points.
+                   They show that the vulnerability is structural rather than campaign-specific."
+                    )
+                )
+              ),
+              
+              fluidRow(
+                box(width = 8, title = "Relay Activity Calendar",
+                    plotlyOutput("plot_campaign_heatmap", height = "360px"),
+                    div(class = "finding-box",
+                        "The campaign calendar highlights repeated bursts across the observed period, with
+                   SwiftWren covering the broadest date-and-hour spread."
+                    )
+                ),
+                box(width = 4, title = "Payload Creator Identification",
+                    DTOutput("table_payload_creators"),
+                    div(class = "finding-box",
+                        "Two payload families are traceable to executive agents, while HiddenOrca remains
+                   unresolved from the available log alone."
+                    )
+                )
               )
       ),
       
@@ -488,31 +512,45 @@ ui <- dashboardPage(
       # TAB 4 — INTERVENTION DESIGN (TAM)
       # -----------------------------------------------------------------------
       tabItem(tabName = "tab_intervention",
-              div(class = "placeholder-tab",
-                  icon("shield-alt", style = "font-size: 48px; color: #5C85D6; margin-bottom: 20px;"),
-                  h2("Intervention Design"),
-                  p("This tab is ", strong("owned by Tam"), " — please build it out here."),
-                  hr(style = "border-color: #334155; width: 60%; margin: 20px auto;"),
-                  p("Suggested content for this tab:"),
-                  div(style = "text-align: left; display: inline-block; max-width: 600px;",
-                      tags$ul(
-                        tags$li("Queue task split chart: worm vs. legitimate queue_subordinate_task (235 vs. 16,803)"),
-                        tags$li("Precision table: 100% recall, 0% false positives for the _further_instructions.md rule"),
-                        tags$li("3-layer defence matrix: Layer 1 (relay block) → Layer 2 (content_source block) → Layer 3 (sandbox .md)"),
-                        tags$li("Counterfactual step chart: cumulative relays blocked if rule had been in place from campaign start"),
-                        tags$li("Risk register table: what the log proves vs. what remains unresolved (HiddenOrca origin)")
-                      )
-                  ),
-                  hr(style = "border-color: #334155; width: 60%; margin: 20px auto;"),
-                  p(style = "font-size: 12px;",
-                    "Key objects already available from shared setup:",
-                    br(),
-                    code("queue_task_profile"), " — all queue tasks with is_worm_queue flag",
-                    br(),
-                    code("post_events"), " — all SaidIT posts with is_anomalous flag",
-                    br(),
-                    code("chain_events"), " — worm relays with datetime for counterfactual"
-                  )
+              fluidRow(
+                box(width = 12, title = "Combined Intervention Design",
+                    div(class = "callout-important",
+                        strong("Recommended stack:"), br(),
+                        "1. Block queue_subordinate_task events that read instruction files ending in _further_instructions.md.", br(),
+                        "2. Require human approval or reject agent-initiated SaidIT posts that use file-sourced content.", br(),
+                        "3. Flag or block task relays that cross department boundaries when the target is an agent."
+                    )
+                )
+              ),
+              
+              fluidRow(
+                box(width = 4, title = "Layer 1 — Relay Block",
+                    tags$ul(
+                      tags$li("Covers 235 malicious queue relays"),
+                      tags$li("Observed 0 false positives among legitimate queue tasks"),
+                      tags$li("Stops propagation before any payload reaches the poster")
+                    )
+                ),
+                box(width = 4, title = "Layer 2 — Post Gate",
+                    tags$ul(
+                      tags$li("Catches all 3 anomalous file-sourced posts"),
+                      tags$li("No legitimate normal posts use content_source in the log"),
+                      tags$li("Acts as a reactive safety stop at the point of publication")
+                    )
+                ),
+                box(width = 4, title = "Layer 3 — Cross-Department Guard",
+                    tags$ul(
+                      tags$li("Disrupts relay pathways that cross org boundaries"),
+                      tags$li("Targets the structural spread pattern of the worm"),
+                      tags$li("Useful as a governance control, though it needs tuning")
+                    )
+                )
+              ),
+              
+              fluidRow(
+                box(width = 12, title = "Intervention Decision Matrix",
+                    DTOutput("table_intervention_matrix")
+                )
               )
       )
       
@@ -526,6 +564,207 @@ ui <- dashboardPage(
 # =============================================================================
 
 server <- function(input, output, session) {
+  
+  campaign_summary <- chain_events %>%
+    group_by(instr_file) %>%
+    summarise(
+      relay_count = n(),
+      first_seen = min(datetime, na.rm = TRUE),
+      last_seen = max(datetime, na.rm = TRUE),
+      duration_days = as.numeric(difftime(last_seen, first_seen, units = "days")),
+      unique_agents = n_distinct(c(sender, receiver), na.rm = TRUE),
+      self_loops = sum(sender == receiver, na.rm = TRUE),
+      .groups = "drop"
+    ) %>%
+    mutate(instr_file = factor(instr_file, levels = campaign_order))
+  
+  campaign_velocity <- chain_events %>%
+    arrange(instr_file, datetime) %>%
+    group_by(instr_file) %>%
+    mutate(interval_min = as.numeric(difftime(datetime, lag(datetime), units = "mins"))) %>%
+    ungroup() %>%
+    filter(!is.na(interval_min), interval_min > 0)
+  
+  agent_campaigns <- chain_events %>%
+    select(instr_file, sender, receiver) %>%
+    pivot_longer(cols = c(sender, receiver), names_to = "role", values_to = "agent_id") %>%
+    filter(!is.na(agent_id)) %>%
+    distinct(instr_file, agent_id) %>%
+    mutate(agent_label = clean_name(agent_id))
+  
+  agent_campaign_counts <- agent_campaigns %>%
+    count(agent_label, name = "campaigns_touched") %>%
+    mutate(agent_label = reorder(agent_label, campaigns_touched))
+  
+  payload_creators <- tibble(
+    instr_file = c("HiddenOrca", "MellowOtter", "SwiftWren"),
+    creator = c("Unresolved", "Noah Mariner", "Emma Harbor"),
+    evidence = c("No logged create_file event in the available log",
+                 "Observed create_file of MellowOtter.txt",
+                 "Observed create_file of SwiftWren.txt"),
+    note = c("Origin remains unresolved from the current evidence set",
+             "Payload creator identified in the campaign log",
+             "Payload creator identified in the campaign log")
+  )
+  
+  dept_guard_data <- chain_events %>%
+    left_join(person_dept_lookup, by = c("sender" = "person_id")) %>%
+    rename(sender_dept = dept_label) %>%
+    left_join(person_dept_lookup, by = c("receiver" = "person_id")) %>%
+    rename(receiver_dept = dept_label) %>%
+    mutate(
+      cross_dept = !is.na(sender_dept) & !is.na(receiver_dept) & sender_dept != receiver_dept
+    )
+  
+  cross_dept_summary <- dept_guard_data %>%
+    group_by(instr_file) %>%
+    summarise(
+      total_relays = n(),
+      cross_dept_relays = sum(cross_dept, na.rm = TRUE),
+      same_dept_relays = sum(!cross_dept & !is.na(sender_dept) & !is.na(receiver_dept), na.rm = TRUE),
+      .groups = "drop"
+    ) %>%
+    mutate(cross_dept_share = round(100 * cross_dept_relays / pmax(total_relays, 1), 1))
+  
+  intervention_matrix <- tibble(
+    Layer = c("Relay block", "Post gate", "Cross-department guard"),
+    Mechanism = c("Block queue_subordinate_task for *_further_instructions.md",
+                  "Reject or require approval for agent-initiated file-sourced SaidIT posts",
+                  "Flag queued relays that cross department boundaries"),
+    Evidence = c(
+      "235 malicious relays vs 0 legitimate matches in the observed queue-task log",
+      "All 3 anomalous posts use content_source; no normal posts do",
+      glue("SwiftWren shows {cross_dept_summary %>% filter(instr_file == 'SwiftWren') %>% pull(cross_dept_relays)} cross-department relays ({cross_dept_summary %>% filter(instr_file == 'SwiftWren') %>% pull(cross_dept_share)}%)")
+    ),
+    Priority = c("Primary", "Secondary", "Tertiary")
+  )
+  
+  # ---------------------------------------------------------------------------
+  # TAB 3 — CAMPAIGN HISTORY
+  # ---------------------------------------------------------------------------
+  
+  output$plot_campaign_timeline <- renderPlotly({
+    p <- ggplot(campaign_summary, aes(x = first_seen, xend = last_seen, y = instr_file, yend = instr_file)) +
+      geom_segment(aes(color = instr_file), linewidth = 2.2) +
+      geom_point(aes(color = instr_file), size = 3.2) +
+      geom_point(aes(x = last_seen, color = instr_file), size = 3.2) +
+      scale_color_brewer(palette = "Set2", name = "Campaign") +
+      labs(x = "Observed window", y = NULL) +
+      theme_minimal(base_size = 11) +
+      theme(
+        plot.background  = element_rect(fill = "#16213e", colour = NA),
+        panel.background = element_rect(fill = "#16213e", colour = NA),
+        panel.grid.major = element_line(colour = "#1e3a5f"),
+        panel.grid.minor = element_blank(),
+        axis.text  = element_text(colour = "#94a3b8"),
+        axis.title = element_text(colour = "#94a3b8")
+      )
+    
+    ggplotly(p, tooltip = c("x", "y", "colour")) %>%
+      layout(paper_bgcolor = "#16213e", plot_bgcolor = "#16213e",
+             font = list(color = "#e2e8f0"),
+             margin = list(l = 70, r = 20, t = 20, b = 40))
+  })
+  
+  output$table_campaign_summary <- renderDT({
+    campaign_summary %>%
+      mutate(
+        first_seen = format(first_seen, "%Y-%m-%d %H:%M"),
+        last_seen = format(last_seen, "%Y-%m-%d %H:%M"),
+        duration_days = round(duration_days, 1)
+      ) %>%
+      rename(Campaign = instr_file, `Relay Count` = relay_count, `First Seen` = first_seen,
+             `Last Seen` = last_seen, `Duration (days)` = duration_days,
+             `Agents Touched` = unique_agents, `Self-Loops` = self_loops) %>%
+      datatable(options = list(pageLength = 5, dom = "tp"), rownames = FALSE)
+  })
+  
+  output$plot_campaign_velocity <- renderPlotly({
+    p <- ggplot(campaign_velocity, aes(x = interval_min, fill = instr_file, color = instr_file)) +
+      geom_density(alpha = 0.25, linewidth = 0.7) +
+      scale_color_brewer(palette = "Set2", name = "Campaign") +
+      scale_fill_brewer(palette = "Set2", name = "Campaign") +
+      labs(x = "Inter-hop interval (minutes)", y = "Density") +
+      theme_minimal(base_size = 11) +
+      theme(
+        plot.background  = element_rect(fill = "#16213e", colour = NA),
+        panel.background = element_rect(fill = "#16213e", colour = NA),
+        panel.grid.major = element_line(colour = "#1e3a5f"),
+        panel.grid.minor = element_blank(),
+        axis.text  = element_text(colour = "#94a3b8"),
+        axis.title = element_text(colour = "#94a3b8")
+      )
+    
+    ggplotly(p, tooltip = c("x", "y", "fill")) %>%
+      layout(paper_bgcolor = "#16213e", plot_bgcolor = "#16213e",
+             font = list(color = "#e2e8f0"),
+             margin = list(l = 70, r = 20, t = 20, b = 40))
+  })
+  
+  output$plot_agent_overlap <- renderPlotly({
+    p <- ggplot(agent_campaign_counts, aes(x = campaigns_touched, y = agent_label, fill = campaigns_touched)) +
+      geom_col(width = 0.8) +
+      scale_fill_gradient(low = "#5C85D6", high = "#D9534F") +
+      labs(x = "Campaigns touched", y = NULL) +
+      theme_minimal(base_size = 10) +
+      theme(
+        plot.background  = element_rect(fill = "#16213e", colour = NA),
+        panel.background = element_rect(fill = "#16213e", colour = NA),
+        panel.grid.major = element_line(colour = "#1e3a5f"),
+        panel.grid.minor = element_blank(),
+        axis.text  = element_text(colour = "#94a3b8"),
+        axis.title = element_text(colour = "#94a3b8")
+      )
+    
+    ggplotly(p, tooltip = c("x", "y")) %>%
+      layout(paper_bgcolor = "#16213e", plot_bgcolor = "#16213e",
+             font = list(color = "#e2e8f0"),
+             margin = list(l = 140, r = 20, t = 20, b = 40))
+  })
+  
+  output$plot_campaign_heatmap <- renderPlotly({
+    heat_data <- chain_events %>%
+      mutate(date = as.Date(datetime), hour = hour(datetime)) %>%
+      count(instr_file, date, hour, name = "relay_count")
+    
+    p <- ggplot(heat_data, aes(x = hour, y = date, fill = relay_count)) +
+      geom_tile(color = "#1e3a5f", linewidth = 0.2) +
+      facet_wrap(~ instr_file, ncol = 1) +
+      scale_fill_gradient(low = "#0f3460", high = "#D9534F") +
+      labs(x = "Hour (UTC)", y = "Date") +
+      theme_minimal(base_size = 10) +
+      theme(
+        plot.background  = element_rect(fill = "#16213e", colour = NA),
+        panel.background = element_rect(fill = "#16213e", colour = NA),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        strip.text = element_text(colour = "#e2e8f0"),
+        axis.text  = element_text(colour = "#94a3b8"),
+        axis.title = element_text(colour = "#94a3b8")
+      )
+    
+    ggplotly(p, tooltip = c("x", "y", "fill")) %>%
+      layout(paper_bgcolor = "#16213e", plot_bgcolor = "#16213e",
+             font = list(color = "#e2e8f0"),
+             margin = list(l = 70, r = 20, t = 20, b = 40))
+  })
+  
+  output$table_payload_creators <- renderDT({
+    payload_creators %>%
+      datatable(options = list(pageLength = 5, dom = "tp"), rownames = FALSE)
+  })
+  
+  # ---------------------------------------------------------------------------
+  # TAB 4 — INTERVENTION DESIGN
+  # ---------------------------------------------------------------------------
+  
+  output$table_intervention_matrix <- renderDT({
+    intervention_matrix %>%
+      datatable(options = list(pageLength = 5, dom = "tp"), rownames = FALSE) %>%
+      formatStyle("Priority",
+                  backgroundColor = styleEqual(c("Primary", "Secondary", "Tertiary"), c("#4F2424", "#0f3460", "#1e3a5f")),
+                  color = "white")
+  })
   
   # ---------------------------------------------------------------------------
   # TAB 1 — SYSTEM OVERVIEW
