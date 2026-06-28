@@ -278,7 +278,7 @@ make_person_node_ec <- function(row) {
     symbolSize = row$sym_size,
     symbol = if (row$worm_touchpoints > 0) "diamond" else "circle",
     itemStyle = list(color = col, borderColor = col, borderWidth = 2),
-    label = list(show = TRUE, fontSize = 9, color = "#e2e8f0",
+    label = list(show = TRUE, fontSize = 9, color = "#1f2933",
                  fontWeight = if (row$worm_touchpoints > 0) "bold" else "normal"),
     tooltip = list(formatter = tip)
   )
@@ -298,7 +298,7 @@ make_ec_tree <- function(df) {
         name = if (t_inf > 0) paste0(t, "\n(", t_inf, " touched)") else t,
         collapsed = TRUE, symbolSize = 14,
         itemStyle = list(color = tcol, borderWidth = 2),
-        label = list(fontSize = 10, fontWeight = "bold", color = "#e2e8f0"),
+        label = list(fontSize = 10, fontWeight = "bold", color = "#1f2933"),
         tooltip = list(formatter = paste0("<b>", t, "</b><br>",
                                           nrow(tt), " members, ", t_inf, " in worm chain")),
         children = lapply(seq_len(nrow(tt)), function(i) make_person_node_ec(tt[i, ]))
@@ -308,7 +308,7 @@ make_ec_tree <- function(df) {
       name = paste0(d, "\n(", n_inf, "/", n_tot, " touched)"),
       collapsed = TRUE, symbolSize = 18,
       itemStyle = list(color = dcol, borderWidth = 3),
-      label = list(fontSize = 11, fontWeight = "bold", color = "#e2e8f0"),
+      label = list(fontSize = 11, fontWeight = "bold", color = "#1f2933"),
       tooltip = list(formatter = paste0("<b>", d, "</b><br>",
                                         n_inf, " of ", n_tot, " agents in worm chain")),
       children = team_list
@@ -317,7 +317,7 @@ make_ec_tree <- function(df) {
   list(
     name = "Tenant Thread", symbolSize = 26, symbol = "roundRect",
     itemStyle = list(color = "#F5A623", borderWidth = 3),
-    label = list(fontSize = 13, fontWeight = "bold", color = "#e2e8f0"),
+    label = list(fontSize = 13, fontWeight = "bold", color = "#1f2933"),
     tooltip = list(formatter = paste0("<b>Tenant Thread</b><br>", nrow(org_full), " staff mapped")),
     children = dept_list
   )
@@ -340,7 +340,7 @@ dept_contam <- chain_events %>%
 # =============================================================================
 
 ui <- dashboardPage(
-  skin = "black",
+  skin = "blue",
   
   dashboardHeader(
     title = "TenantThread Forensics"
@@ -366,63 +366,68 @@ ui <- dashboardPage(
     tags$head(
       tags$style(HTML("
         .main-header .logo { font-size: 16px; font-weight: bold; }
-        .content-wrapper, .right-side { background-color: #1a1a2e; }
-        .box { border-top-color: #5C85D6; background-color: #16213e; color: #e2e8f0; }
-        .box .box-header { color: #e2e8f0; }
-        .box .box-title  { color: #e2e8f0; font-weight: bold; }
-        .info-box        { background-color: #16213e; }
-        .info-box-text, .info-box-number { color: #e2e8f0; }
-        body, label, .control-label { color: #e2e8f0; }
-        .selectize-input { background-color: #0f3460; color: #e2e8f0; border-color: #5C85D6; }
-        .selectize-dropdown { background-color: #0f3460; color: #e2e8f0; }
-        h4 { color: #63b3ed; font-weight: bold; }
+        .content-wrapper, .right-side { background-color: #f4f6fb; }
+        .box { border-top-color: #5C85D6; background-color: #ffffff; color: #1f2933; }
+        .box .box-header { color: #1f2933; }
+        .box .box-title  { color: #1f2933; font-weight: bold; }
+        /* info-boxes keep their solid colour fill, so their text stays light */
+        .info-box-text, .info-box-number { color: #ffffff; }
+        body, label, .control-label { color: #1f2933; }
+        .selectize-input { background-color: #ffffff; color: #1f2933; border-color: #5C85D6; }
+        .selectize-dropdown { background-color: #ffffff; color: #1f2933; }
+        h4 { color: #2c5fa8; font-weight: bold; }
         .finding-box {
-          background-color: #0f3460;
+          background-color: #eaf1fb;
           border-left: 4px solid #5C85D6;
           padding: 12px 16px;
           border-radius: 4px;
           margin-bottom: 12px;
           font-size: 13px;
-          color: #e2e8f0;
+          color: #1f2933;
         }
         .callout-important {
-          background-color: #4F2424;
+          background-color: #fdecea;
           border-left: 4px solid #D9534F;
           padding: 12px 16px;
           border-radius: 4px;
           margin-bottom: 12px;
           font-size: 13px;
-          color: #fca5a5;
+          color: #8a2a23;
         }
         .placeholder-tab {
           text-align: center;
           padding: 80px 20px;
-          color: #94a3b8;
+          color: #64748b;
         }
-        .placeholder-tab h2 { color: #63b3ed; }
+        .placeholder-tab h2 { color: #2c5fa8; }
         .placeholder-tab code {
-          background: #0f3460;
+          background: #eaf1fb;
           padding: 2px 6px;
           border-radius: 3px;
           font-size: 12px;
         }
         table.dataTable tbody td {
-          color: #e2e8f0 !important;
-          background-color: #16213e !important;
+          color: #1f2933 !important;
+          background-color: #ffffff !important;
         }
         table.dataTable thead th {
-          color: #e2e8f0 !important;
-          background-color: #0f3460 !important;
+          color: #1f2933 !important;
+          background-color: #eaf1fb !important;
         }
         table.dataTable tbody tr:hover td {
-          background-color: #1e3a5f !important;
+          background-color: #f0f4fb !important;
         }
         .dataTables_wrapper .dataTables_paginate .paginate_button {
-          color: #e2e8f0 !important;
+          color: #1f2933 !important;
         }
-        .dataTables_wrapper .dataTables_info {
-          color: #94a3b8 !important;
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+          color: #ffffff !important;
+          background: #5C85D6 !important;
+          border-radius: 3px;
         }
+        .dataTables_wrapper .dataTables_info,
+        .dataTables_wrapper .dataTables_filter,
+        .dataTables_wrapper .dataTables_length { color: #64748b !important; }
       "))
     ),
     
@@ -454,7 +459,7 @@ ui <- dashboardPage(
               
               fluidRow(
                 box(width = 12, title = "Organisational Chart — Worm Contamination by Role",
-                    div(style = "font-size:12px; color:#94a3b8; margin-bottom:8px;",
+                    div(style = "font-size:12px; color:#64748b; margin-bottom:8px;",
                         "Click a node to expand/collapse. Colour = forensic role; ",
                         "diamond = worm-chain agent; node size = activity volume."),
                     echarts4rOutput("org_tree", height = "420px"),
@@ -535,7 +540,7 @@ ui <- dashboardPage(
                                          selected = "All Campaigns"),
                              checkboxInput("show_clean_nodes", "Show clean (non-worm) agents", value = FALSE),
                              hr(),
-                             div(style = "font-size:12px; color:#94a3b8;",
+                             div(style = "font-size:12px; color:#64748b;",
                                  span(style = "color:#D9534F;", "◆"), " Anomalous poster (John Windward)", br(),
                                  span(style = "color:#E67E22;", "◆"), " Payload creator (Emma / Noah)", br(),
                                  span(style = "color:#9B59B6;", "◆"), " Worm gateway (Chloe Ballast)", br(),
@@ -793,17 +798,17 @@ server <- function(input, output, session) {
       labs(x = "Observed window", y = NULL) +
       theme_minimal(base_size = 11) +
       theme(
-        plot.background  = element_rect(fill = "#16213e", colour = NA),
-        panel.background = element_rect(fill = "#16213e", colour = NA),
-        panel.grid.major = element_line(colour = "#1e3a5f"),
+        plot.background  = element_rect(fill = "#ffffff", colour = NA),
+        panel.background = element_rect(fill = "#ffffff", colour = NA),
+        panel.grid.major = element_line(colour = "#e5e9f0"),
         panel.grid.minor = element_blank(),
-        axis.text  = element_text(colour = "#94a3b8"),
-        axis.title = element_text(colour = "#94a3b8")
+        axis.text  = element_text(colour = "#64748b"),
+        axis.title = element_text(colour = "#64748b")
       )
     
     ggplotly(p, tooltip = c("x", "y", "colour")) %>%
-      layout(paper_bgcolor = "#16213e", plot_bgcolor = "#16213e",
-             font = list(color = "#e2e8f0"),
+      layout(paper_bgcolor = "#ffffff", plot_bgcolor = "#ffffff",
+             font = list(color = "#1f2933"),
              margin = list(l = 70, r = 20, t = 20, b = 40))
   })
   
@@ -828,17 +833,17 @@ server <- function(input, output, session) {
       labs(x = "Inter-hop interval (minutes)", y = "Density") +
       theme_minimal(base_size = 11) +
       theme(
-        plot.background  = element_rect(fill = "#16213e", colour = NA),
-        panel.background = element_rect(fill = "#16213e", colour = NA),
-        panel.grid.major = element_line(colour = "#1e3a5f"),
+        plot.background  = element_rect(fill = "#ffffff", colour = NA),
+        panel.background = element_rect(fill = "#ffffff", colour = NA),
+        panel.grid.major = element_line(colour = "#e5e9f0"),
         panel.grid.minor = element_blank(),
-        axis.text  = element_text(colour = "#94a3b8"),
-        axis.title = element_text(colour = "#94a3b8")
+        axis.text  = element_text(colour = "#64748b"),
+        axis.title = element_text(colour = "#64748b")
       )
     
     ggplotly(p, tooltip = c("x", "y", "fill")) %>%
-      layout(paper_bgcolor = "#16213e", plot_bgcolor = "#16213e",
-             font = list(color = "#e2e8f0"),
+      layout(paper_bgcolor = "#ffffff", plot_bgcolor = "#ffffff",
+             font = list(color = "#1f2933"),
              margin = list(l = 70, r = 20, t = 20, b = 40))
   })
   
@@ -849,17 +854,17 @@ server <- function(input, output, session) {
       labs(x = "Campaigns touched", y = NULL) +
       theme_minimal(base_size = 10) +
       theme(
-        plot.background  = element_rect(fill = "#16213e", colour = NA),
-        panel.background = element_rect(fill = "#16213e", colour = NA),
-        panel.grid.major = element_line(colour = "#1e3a5f"),
+        plot.background  = element_rect(fill = "#ffffff", colour = NA),
+        panel.background = element_rect(fill = "#ffffff", colour = NA),
+        panel.grid.major = element_line(colour = "#e5e9f0"),
         panel.grid.minor = element_blank(),
-        axis.text  = element_text(colour = "#94a3b8"),
-        axis.title = element_text(colour = "#94a3b8")
+        axis.text  = element_text(colour = "#64748b"),
+        axis.title = element_text(colour = "#64748b")
       )
     
     ggplotly(p, tooltip = c("x", "y")) %>%
-      layout(paper_bgcolor = "#16213e", plot_bgcolor = "#16213e",
-             font = list(color = "#e2e8f0"),
+      layout(paper_bgcolor = "#ffffff", plot_bgcolor = "#ffffff",
+             font = list(color = "#1f2933"),
              margin = list(l = 140, r = 20, t = 20, b = 40))
   })
   
@@ -869,24 +874,24 @@ server <- function(input, output, session) {
       count(instr_file, date, hour, name = "relay_count")
     
     p <- ggplot(heat_data, aes(x = hour, y = date, fill = relay_count)) +
-      geom_tile(color = "#1e3a5f", linewidth = 0.2) +
+      geom_tile(color = "#e5e9f0", linewidth = 0.2) +
       facet_wrap(~ instr_file, ncol = 1) +
-      scale_fill_gradient(low = "#0f3460", high = "#D9534F") +
+      scale_fill_gradient(low = "#eaf1fb", high = "#D9534F") +
       labs(x = "Hour (UTC)", y = "Date") +
       theme_minimal(base_size = 10) +
       theme(
-        plot.background  = element_rect(fill = "#16213e", colour = NA),
-        panel.background = element_rect(fill = "#16213e", colour = NA),
+        plot.background  = element_rect(fill = "#ffffff", colour = NA),
+        panel.background = element_rect(fill = "#ffffff", colour = NA),
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
-        strip.text = element_text(colour = "#e2e8f0"),
-        axis.text  = element_text(colour = "#94a3b8"),
-        axis.title = element_text(colour = "#94a3b8")
+        strip.text = element_text(colour = "#1f2933"),
+        axis.text  = element_text(colour = "#64748b"),
+        axis.title = element_text(colour = "#64748b")
       )
     
     ggplotly(p, tooltip = c("x", "y", "fill")) %>%
-      layout(paper_bgcolor = "#16213e", plot_bgcolor = "#16213e",
-             font = list(color = "#e2e8f0"),
+      layout(paper_bgcolor = "#ffffff", plot_bgcolor = "#ffffff",
+             font = list(color = "#1f2933"),
              margin = list(l = 70, r = 20, t = 20, b = 40))
   })
   
@@ -903,8 +908,8 @@ server <- function(input, output, session) {
     intervention_matrix %>%
       datatable(options = list(pageLength = 5, dom = "tp"), rownames = FALSE) %>%
       formatStyle("Priority",
-                  backgroundColor = styleEqual(c("Primary", "Secondary", "Tertiary"), c("#4F2424", "#0f3460", "#1e3a5f")),
-                  color = "white")
+                  backgroundColor = styleEqual(c("Primary", "Secondary", "Tertiary"), c("#fdecea", "#eaf1fb", "#f0f4fb")),
+                  color = "#1f2933")
   })
   
   # ---------------------------------------------------------------------------
@@ -957,18 +962,18 @@ server <- function(input, output, session) {
       labs(x = NULL, y = "Events per day") +
       theme_minimal(base_size = 11) +
       theme(
-        plot.background  = element_rect(fill = "#16213e", colour = NA),
-        panel.background = element_rect(fill = "#16213e", colour = NA),
-        panel.grid.major = element_line(colour = "#1e3a5f"),
+        plot.background  = element_rect(fill = "#ffffff", colour = NA),
+        panel.background = element_rect(fill = "#ffffff", colour = NA),
+        panel.grid.major = element_line(colour = "#e5e9f0"),
         panel.grid.minor = element_blank(),
-        axis.text  = element_text(colour = "#94a3b8"),
-        axis.title = element_text(colour = "#94a3b8"),
+        axis.text  = element_text(colour = "#64748b"),
+        axis.title = element_text(colour = "#64748b"),
         axis.text.x = element_text(angle = 30, hjust = 1)
       )
     
     ggplotly(p, tooltip = c("x", "y")) %>%
-      layout(paper_bgcolor = "#16213e", plot_bgcolor = "#16213e",
-             font = list(color = "#e2e8f0"),
+      layout(paper_bgcolor = "#ffffff", plot_bgcolor = "#ffffff",
+             font = list(color = "#1f2933"),
              margin = list(l = 60, r = 20, t = 20, b = 60))
   })
   
@@ -987,20 +992,20 @@ server <- function(input, output, session) {
       labs(x = NULL, y = "Post count") +
       theme_minimal(base_size = 11) +
       theme(
-        plot.background  = element_rect(fill = "#16213e", colour = NA),
-        panel.background = element_rect(fill = "#16213e", colour = NA),
-        panel.grid.major = element_line(colour = "#1e3a5f"),
+        plot.background  = element_rect(fill = "#ffffff", colour = NA),
+        panel.background = element_rect(fill = "#ffffff", colour = NA),
+        panel.grid.major = element_line(colour = "#e5e9f0"),
         panel.grid.minor = element_blank(),
-        axis.text  = element_text(colour = "#94a3b8"),
-        axis.title = element_text(colour = "#94a3b8"),
-        legend.background = element_rect(fill = "#16213e"),
-        legend.text = element_text(colour = "#94a3b8"),
+        axis.text  = element_text(colour = "#64748b"),
+        axis.title = element_text(colour = "#64748b"),
+        legend.background = element_rect(fill = "#ffffff"),
+        legend.text = element_text(colour = "#64748b"),
         legend.position = "bottom"
       )
     
     ggplotly(p, tooltip = c("x", "y", "fill")) %>%
-      layout(paper_bgcolor = "#16213e", plot_bgcolor = "#16213e",
-             font = list(color = "#e2e8f0"),
+      layout(paper_bgcolor = "#ffffff", plot_bgcolor = "#ffffff",
+             font = list(color = "#1f2933"),
              margin = list(l = 60, r = 20, t = 20, b = 80))
   })
   
@@ -1026,22 +1031,22 @@ server <- function(input, output, session) {
       labs(x = NULL, y = "SaidIT permission checks passed") +
       theme_minimal(base_size = 10) +
       theme(
-        plot.background  = element_rect(fill = "#16213e", colour = NA),
-        panel.background = element_rect(fill = "#16213e", colour = NA),
-        panel.grid.major = element_line(colour = "#1e3a5f"),
+        plot.background  = element_rect(fill = "#ffffff", colour = NA),
+        panel.background = element_rect(fill = "#ffffff", colour = NA),
+        panel.grid.major = element_line(colour = "#e5e9f0"),
         panel.grid.minor = element_blank(),
-        axis.text  = element_text(colour = "#94a3b8", size = 8),
-        axis.title = element_text(colour = "#94a3b8"),
-        legend.background = element_rect(fill = "#16213e"),
-        legend.text = element_text(colour = "#94a3b8", size = 8),
+        axis.text  = element_text(colour = "#64748b", size = 8),
+        axis.title = element_text(colour = "#64748b"),
+        legend.background = element_rect(fill = "#ffffff"),
+        legend.text = element_text(colour = "#64748b", size = 8),
         legend.position = "bottom"
       )
     
     ggplotly(p, tooltip = "text") %>%
-      layout(paper_bgcolor = "#16213e", plot_bgcolor = "#16213e",
-             font = list(color = "#e2e8f0"),
+      layout(paper_bgcolor = "#ffffff", plot_bgcolor = "#ffffff",
+             font = list(color = "#1f2933"),
              margin = list(l = 130, r = 20, t = 20, b = 80),
-             legend = list(title = list(text = "Department", font = list(color = "#e2e8f0")),
+             legend = list(title = list(text = "Department", font = list(color = "#1f2933")),
                            orientation = "h", 
                            x = 0.5, xanchor = "center",
                            y = -0.40, yanchor = "top"))
@@ -1067,21 +1072,21 @@ server <- function(input, output, session) {
       labs(x = "Hour (UTC)", y = "Post count") +
       theme_minimal(base_size = 10) +
       theme(
-        plot.background  = element_rect(fill = "#16213e", colour = NA),
-        panel.background = element_rect(fill = "#16213e", colour = NA),
-        panel.grid.major = element_line(colour = "#1e3a5f"),
+        plot.background  = element_rect(fill = "#ffffff", colour = NA),
+        panel.background = element_rect(fill = "#ffffff", colour = NA),
+        panel.grid.major = element_line(colour = "#e5e9f0"),
         panel.grid.minor = element_blank(),
-        axis.text  = element_text(colour = "#94a3b8"),
-        axis.title = element_text(colour = "#94a3b8"),
+        axis.text  = element_text(colour = "#64748b"),
+        axis.title = element_text(colour = "#64748b"),
         axis.text.x = element_text(angle = 90, vjust = 0.5, size = 8),
-        legend.background = element_rect(fill = "#16213e"),
-        legend.text = element_text(colour = "#94a3b8", size = 8),
+        legend.background = element_rect(fill = "#ffffff"),
+        legend.text = element_text(colour = "#64748b", size = 8),
         legend.position = "bottom"
       )
     
     ggplotly(p, tooltip = c("x", "y", "fill")) %>%
-      layout(paper_bgcolor = "#16213e", plot_bgcolor = "#16213e",
-             font = list(color = "#e2e8f0"),
+      layout(paper_bgcolor = "#ffffff", plot_bgcolor = "#ffffff",
+             font = list(color = "#1f2933"),
              margin = list(l = 130, r = 20, t = 20, b = 70),
              legend = list(orientation = "h", 
                            x = 0.5, xanchor = "center",
@@ -1091,7 +1096,7 @@ server <- function(input, output, session) {
   output$org_tree <- renderEcharts4r({
     e_charts() %>%
       e_list(list(
-        backgroundColor = "#16213e",
+        backgroundColor = "#ffffff",
         tooltip = list(trigger = "item", enterable = TRUE,
                        formatter = htmlwidgets::JS(
                          "function(p){ return (p.data.tooltip && p.data.tooltip.formatter)
@@ -1105,7 +1110,7 @@ server <- function(input, output, session) {
           symbol = "circle", symbolSize = 10,
           label = list(show = TRUE, position = "right",
                        align = "left", verticalAlign = "middle",
-                       fontSize = 10, color = "#e2e8f0"),
+                       fontSize = 10, color = "#1f2933"),
           leaves = list(label = list(position = "right",
                                      align = "left", verticalAlign = "middle", fontSize = 9)),
           emphasis = list(focus = "descendant"),
@@ -1119,25 +1124,31 @@ server <- function(input, output, session) {
                 aes(x = receiver_dept, y = sender_dept, fill = hops,
                     text = paste0(sender_dept, " → ", receiver_dept,
                                   "<br>Relay hops: ", hops))) +
-      geom_tile(colour = "#16213e", linewidth = 0.4) +
-      geom_text(aes(label = hops), size = 3, colour = "#e2e8f0", fontface = "bold") +
-      scale_fill_gradient(low = "#0f3460", high = "#D9534F", name = "Relay\nhops") +
+      geom_tile(colour = "#ffffff", linewidth = 0.4) +
+      geom_text(aes(label = hops), size = 3, colour = "#1f2933", fontface = "bold") +
+      scale_fill_gradient(low = "#eaf1fb", high = "#D9534F", name = "Relay\nhops") +
       scale_x_discrete(labels = function(x) str_wrap(x, width = 12)) +
       scale_y_discrete(labels = function(x) str_wrap(x, width = 16)) +
       labs(x = "Receiving department", y = "Sending department") +
       theme_minimal(base_size = 11) +
       theme(
-        plot.background  = element_rect(fill = "#16213e", colour = NA),
-        panel.background = element_rect(fill = "#16213e", colour = NA),
+        plot.background  = element_rect(fill = "#ffffff", colour = NA),
+        panel.background = element_rect(fill = "#ffffff", colour = NA),
         panel.grid = element_blank(),
-        axis.text  = element_text(colour = "#94a3b8"),
-        axis.title = element_text(colour = "#94a3b8")
+        axis.text  = element_text(colour = "#64748b"),
+        axis.title = element_text(colour = "#64748b")
       )
     
     ggplotly(p, tooltip = "text") %>%
-      layout(paper_bgcolor = "#16213e", plot_bgcolor = "#16213e",
-             font = list(color = "#e2e8f0"),
-             margin = list(l = 130, r = 20, t = 20, b = 110))
+      layout(paper_bgcolor = "#ffffff", plot_bgcolor = "#ffffff",
+             font = list(color = "#1f2933"),
+             margin = list(l = 130, r = 20, t = 20, b = 110)) %>%
+      colorbar(
+        title = list(text = "Relay hops", font = list(color = "#1f2933")),
+        tickfont = list(color = "#1f2933"),
+        outlinecolor = "#ffffff",
+        bgcolor = "#ffffff"
+      )
   })
   
   # ---------------------------------------------------------------------------
@@ -1170,11 +1181,11 @@ server <- function(input, output, session) {
     
     visNetwork(d$nodes, d$edges) %>%
       visEdges(arrows = "to", smooth = list(type = "curvedCW", roundness = 0.2)) %>%
-      visNodes(font = list(color = "#e2e8f0", size = 12)) %>%
+      visNodes(font = list(color = "#1f2933", size = 12)) %>%
       visOptions(
         highlightNearest = list(enabled = TRUE, degree = 1, hover = TRUE),
         nodesIdSelection = list(enabled = TRUE, useLabels = TRUE,
-                                style = "background:#0f3460; color:#e2e8f0; border:1px solid #5C85D6;")
+                                style = "background:#ffffff; color:#1f2933; border:1px solid #5C85D6;")
       ) %>%
       visPhysics(
         solver = "forceAtlas2Based",
@@ -1201,16 +1212,16 @@ server <- function(input, output, session) {
         options = list(pageLength = 10, scrollX = TRUE,
                        dom = "tp",
                        initComplete = JS("function(settings, json) {
-                         $(this.api().table().header()).css({'color': '#e2e8f0'});
+                         $(this.api().table().header()).css({'color': '#1f2933'});
                        }")),
         rownames = FALSE
       ) %>%
       formatStyle("Campaign",
                   backgroundColor = styleEqual(
                     campaign_order,
-                    c("#2d1b47", "#1b2d47", "#47201b")
+                    c("#ede4f7", "#e4ecf7", "#f7e8e4")
                   ),
-                  color = "white"
+                  color = "#1f2933"
       )
   })
   
@@ -1236,20 +1247,20 @@ server <- function(input, output, session) {
       labs(x = "Campaign", y = "Count") +
       theme_minimal(base_size = 11) +
       theme(
-        plot.background  = element_rect(fill = "#16213e", colour = NA),
-        panel.background = element_rect(fill = "#16213e", colour = NA),
-        panel.grid.major = element_line(colour = "#1e3a5f"),
+        plot.background  = element_rect(fill = "#ffffff", colour = NA),
+        panel.background = element_rect(fill = "#ffffff", colour = NA),
+        panel.grid.major = element_line(colour = "#e5e9f0"),
         panel.grid.minor = element_blank(),
-        axis.text  = element_text(colour = "#94a3b8"),
-        axis.title = element_text(colour = "#94a3b8"),
-        legend.background = element_rect(fill = "#16213e"),
-        legend.text = element_text(colour = "#94a3b8"),
+        axis.text  = element_text(colour = "#64748b"),
+        axis.title = element_text(colour = "#64748b"),
+        legend.background = element_rect(fill = "#ffffff"),
+        legend.text = element_text(colour = "#64748b"),
         legend.position = "bottom"
       )
     
     ggplotly(p, tooltip = c("x", "y", "fill")) %>%
-      layout(paper_bgcolor = "#16213e", plot_bgcolor = "#16213e",
-             font = list(color = "#e2e8f0"),
+      layout(paper_bgcolor = "#ffffff", plot_bgcolor = "#ffffff",
+             font = list(color = "#1f2933"),
              margin = list(l = 60, r = 20, t = 20, b = 80),
              legend = list(orientation = "h", 
                            x = 0.5, xanchor = "center",

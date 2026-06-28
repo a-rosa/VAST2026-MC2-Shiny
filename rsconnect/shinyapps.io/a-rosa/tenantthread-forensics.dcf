@@ -5,7 +5,7 @@ account: a-rosa
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 17515045
-bundleId: 12190092
+bundleId: 12190181
 url: https://a-rosa.shinyapps.io/tenantthread-forensics/
 version: 1
 asMultiple: FALSE
