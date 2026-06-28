@@ -204,7 +204,7 @@ vis_nodes_all <- person_meta %>%
                   Worm relays sent: {worm_relays}<br>
                   Worm relays received: {worm_receipts}"),
     shape = if_else(worm_touchpoints > 0, "diamond", "dot"),
-    size  = pmax(10, pmin(35, log1p(total_events) * 3))
+    size  = pmax(8, pmin(20, log1p(total_events) * 1.8))
   )
 
 vis_edges_all <- chain_events %>%
@@ -213,14 +213,127 @@ vis_edges_all <- chain_events %>%
   transmute(
     from  = sender,
     to    = receiver,
-    value = value,
+    # Capped width: keep heavy edges from burying light ones
+    width = scales::rescale(sqrt(value), to = c(0.6, 4)),
     color = case_when(
-      instr_file == "HiddenOrca"  ~ "#8E44AD",
-      instr_file == "MellowOtter" ~ "#2980B9",
-      instr_file == "SwiftWren"   ~ "#D9534F"
+      instr_file == "HiddenOrca"  ~ "rgba(142,68,173,0.55)",
+      instr_file == "MellowOtter" ~ "rgba(41,128,185,0.55)",
+      instr_file == "SwiftWren"   ~ "rgba(217,83,79,0.45)"
     ),
     title = glue("{instr_file}: {value} relay(s)")
   )
+
+# --- Build org_full for the echarts4r tree (Tab 1) ---
+team_dept_ec <- org_edges %>%
+  filter(str_starts(source, "department:"), str_starts(target, "team:")) %>%
+  left_join(org_nodes %>% select(id, dept_label = label), by = c("source" = "id")) %>%
+  select(team_id = target, department = dept_label)
+
+person_team_ec <- org_edges %>%
+  filter(str_starts(source, "team:"), str_starts(target, "person:"),
+         relation == "contains") %>%
+  left_join(org_nodes %>% select(id, team_label = label), by = c("source" = "id")) %>%
+  rename(person_id = target) %>%
+  left_join(team_dept_ec, by = c("source" = "team_id")) %>%
+  left_join(person_meta, by = "person_id") %>%
+  select(department, team = team_label, person_id, name_clean,
+         node_color, worm_touchpoints, total_events, status_text, title)
+
+dept_leads_ec <- org_edges %>%
+  filter(str_starts(source, "department:"), str_starts(target, "person:")) %>%
+  left_join(org_nodes %>% select(id, dept_label = label), by = c("source" = "id")) %>%
+  rename(person_id = target) %>%
+  left_join(person_meta, by = "person_id") %>%
+  mutate(team = paste0(dept_label, " - Leadership")) %>%
+  select(department = dept_label, team, person_id, name_clean,
+         node_color, worm_touchpoints, total_events, status_text, title)
+
+org_full <- bind_rows(person_team_ec, dept_leads_ec) %>%
+  filter(!is.na(department), !is.na(team), !is.na(name_clean)) %>%
+  distinct(department, team, name_clean, .keep_all = TRUE) %>%
+  mutate(
+    sym_size = round(scales::rescale(log1p(replace_na(total_events, 0)), to = c(8, 26)))
+  )
+
+# --- Tree-builder helpers ---
+make_person_node_ec <- function(row) {
+  col <- row$node_color
+  badge <- dplyr::case_when(
+    row$status_text == "Anomalous Poster" ~ "POSTER",
+    row$status_text == "Payload Creator"  ~ "ORIGIN",
+    row$status_text == "Worm Gateway"     ~ "GATEWAY",
+    row$worm_touchpoints > 0              ~ paste0(row$worm_touchpoints, " touches"),
+    TRUE                                  ~ ""
+  )
+  display_name <- paste0(row$name_clean, if (badge != "") paste0("\n", badge) else "")
+  tip <- paste0(
+    "<b>", row$name_clean, "</b>",
+    if (!is.na(row$title) && row$title != "") paste0("<br><i>", row$title, "</i>") else "",
+    "<br>Status: ", row$status_text,
+    "<br>Events: ", scales::comma(replace_na(row$total_events, 0)),
+    "<br>Worm touchpoints: ", row$worm_touchpoints
+  )
+  list(
+    name = display_name,
+    symbolSize = row$sym_size,
+    symbol = if (row$worm_touchpoints > 0) "diamond" else "circle",
+    itemStyle = list(color = col, borderColor = col, borderWidth = 2),
+    label = list(show = TRUE, fontSize = 9, color = "#e2e8f0",
+                 fontWeight = if (row$worm_touchpoints > 0) "bold" else "normal"),
+    tooltip = list(formatter = tip)
+  )
+}
+
+make_ec_tree <- function(df) {
+  dept_list <- lapply(sort(unique(df$department)), function(d) {
+    td    <- df %>% filter(department == d)
+    n_inf <- sum(td$worm_touchpoints > 0, na.rm = TRUE)
+    n_tot <- nrow(td)
+    dcol  <- if (n_inf > n_tot / 2) "#C0392B" else if (n_inf > 0) "#E67E22" else "#2EADC1"
+    team_list <- lapply(sort(unique(td$team)), function(t) {
+      tt    <- td %>% filter(team == t)
+      t_inf <- sum(tt$worm_touchpoints > 0, na.rm = TRUE)
+      tcol  <- if (t_inf > 0) "#F39C12" else "#5C85D6"
+      list(
+        name = if (t_inf > 0) paste0(t, "\n(", t_inf, " touched)") else t,
+        collapsed = TRUE, symbolSize = 14,
+        itemStyle = list(color = tcol, borderWidth = 2),
+        label = list(fontSize = 10, fontWeight = "bold", color = "#e2e8f0"),
+        tooltip = list(formatter = paste0("<b>", t, "</b><br>",
+                                          nrow(tt), " members, ", t_inf, " in worm chain")),
+        children = lapply(seq_len(nrow(tt)), function(i) make_person_node_ec(tt[i, ]))
+      )
+    })
+    list(
+      name = paste0(d, "\n(", n_inf, "/", n_tot, " touched)"),
+      collapsed = TRUE, symbolSize = 18,
+      itemStyle = list(color = dcol, borderWidth = 3),
+      label = list(fontSize = 11, fontWeight = "bold", color = "#e2e8f0"),
+      tooltip = list(formatter = paste0("<b>", d, "</b><br>",
+                                        n_inf, " of ", n_tot, " agents in worm chain")),
+      children = team_list
+    )
+  })
+  list(
+    name = "Tenant Thread", symbolSize = 26, symbol = "roundRect",
+    itemStyle = list(color = "#F5A623", borderWidth = 3),
+    label = list(fontSize = 13, fontWeight = "bold", color = "#e2e8f0"),
+    tooltip = list(formatter = paste0("<b>Tenant Thread</b><br>", nrow(org_full), " staff mapped")),
+    children = dept_list
+  )
+}
+
+ec_tree_data <- make_ec_tree(org_full)
+
+# --- Dept-to-dept contamination matrix (Tab 2) ---
+dept_contam <- chain_events %>%
+  filter(!is.na(sender), !is.na(receiver)) %>%
+  left_join(person_dept_lookup %>% rename(sender_dept = dept_label),
+            by = c("sender" = "person_id")) %>%
+  left_join(person_dept_lookup %>% rename(receiver_dept = dept_label),
+            by = c("receiver" = "person_id")) %>%
+  filter(!is.na(sender_dept), !is.na(receiver_dept)) %>%
+  count(sender_dept, receiver_dept, name = "hops")
 
 # =============================================================================
 # UI
@@ -230,7 +343,7 @@ ui <- dashboardPage(
   skin = "black",
   
   dashboardHeader(
-    title = span("TenantThread Forensics", style = "font-size:16px; font-weight:bold;")
+    title = "TenantThread Forensics"
   ),
   
   dashboardSidebar(
@@ -252,6 +365,7 @@ ui <- dashboardPage(
   dashboardBody(
     tags$head(
       tags$style(HTML("
+        .main-header .logo { font-size: 16px; font-weight: bold; }
         .content-wrapper, .right-side { background-color: #1a1a2e; }
         .box { border-top-color: #5C85D6; background-color: #16213e; color: #e2e8f0; }
         .box .box-header { color: #e2e8f0; }
@@ -334,6 +448,21 @@ ui <- dashboardPage(
                    evidence files in a four-second burst. A single rule —
                    block queue_subordinate_task whose path ends in _further_instructions.md —
                    would have stopped all 235 malicious relays with zero false positives."
+                    )
+                )
+              ),
+              
+              fluidRow(
+                box(width = 12, title = "Organisational Chart — Worm Contamination by Role",
+                    div(style = "font-size:12px; color:#94a3b8; margin-bottom:8px;",
+                        "Click a node to expand/collapse. Colour = forensic role; ",
+                        "diamond = worm-chain agent; node size = activity volume."),
+                    echarts4rOutput("org_tree", height = "420px"),
+                    div(class = "finding-box",
+                        "All six departments contain at least one worm-chain agent. The two payload
+                   origins (Emma Harbor, Noah Mariner) sit at the top of the hierarchy while the
+                   terminal poster (John Windward) sits near the bottom — the worm flows with
+                   legitimate authority, not against it."
                     )
                 )
               ),
@@ -446,6 +575,18 @@ ui <- dashboardPage(
                    impossible in legitimate task flow. These 13 events appear only in worm
                    relays — a zero-false-positive real-time detection signal requiring no
                    knowledge of filename or payload content."
+                    )
+                )
+              ),
+              
+              fluidRow(
+                box(width = 12, title = "Department-Level Contamination Heatmap",
+                    plotlyOutput("plot_dept_contam", height = "420px"),
+                    div(class = "finding-box",
+                        "Every department-to-department pair shows relay activity. The Executive Suite
+                   → Information Technologies → Customer Support path is the worm's arterial highway,
+                   while Customer Support acts as a terminal sink — it receives relays but rarely
+                   sends them onward, which is why John Windward's post ends the chain."
                     )
                 )
               )
@@ -945,6 +1086,58 @@ server <- function(input, output, session) {
              legend = list(orientation = "h", 
                            x = 0.5, xanchor = "center",
                            y = -0.30, yanchor = "top"))
+  })
+  
+  output$org_tree <- renderEcharts4r({
+    e_charts() %>%
+      e_list(list(
+        backgroundColor = "#16213e",
+        tooltip = list(trigger = "item", enterable = TRUE,
+                       formatter = htmlwidgets::JS(
+                         "function(p){ return (p.data.tooltip && p.data.tooltip.formatter)
+               ? p.data.tooltip.formatter : p.name; }")),
+        series = list(list(
+          type = "tree", data = list(ec_tree_data),
+          layout = "orthogonal", orient = "LR",
+          top = "3%", bottom = "3%", left = "8%", right = "12%",
+          roam = TRUE, expandAndCollapse = TRUE, initialTreeDepth = 1,
+          edgeShape = "polyline", lineStyle = list(color = "#5C85D6", width = 1.2),
+          symbol = "circle", symbolSize = 10,
+          label = list(show = TRUE, position = "right",
+                       align = "left", verticalAlign = "middle",
+                       fontSize = 10, color = "#e2e8f0"),
+          leaves = list(label = list(position = "right",
+                                     align = "left", verticalAlign = "middle", fontSize = 9)),
+          emphasis = list(focus = "descendant"),
+          animationDuration = 450, animationDurationUpdate = 650
+        ))
+      ))
+  })
+  
+  output$plot_dept_contam <- renderPlotly({
+    p <- ggplot(dept_contam,
+                aes(x = receiver_dept, y = sender_dept, fill = hops,
+                    text = paste0(sender_dept, " → ", receiver_dept,
+                                  "<br>Relay hops: ", hops))) +
+      geom_tile(colour = "#16213e", linewidth = 0.4) +
+      geom_text(aes(label = hops), size = 3, colour = "#e2e8f0", fontface = "bold") +
+      scale_fill_gradient(low = "#0f3460", high = "#D9534F", name = "Relay\nhops") +
+      scale_x_discrete(labels = function(x) str_wrap(x, width = 12)) +
+      scale_y_discrete(labels = function(x) str_wrap(x, width = 16)) +
+      labs(x = "Receiving department", y = "Sending department") +
+      theme_minimal(base_size = 11) +
+      theme(
+        plot.background  = element_rect(fill = "#16213e", colour = NA),
+        panel.background = element_rect(fill = "#16213e", colour = NA),
+        panel.grid = element_blank(),
+        axis.text  = element_text(colour = "#94a3b8"),
+        axis.title = element_text(colour = "#94a3b8")
+      )
+    
+    ggplotly(p, tooltip = "text") %>%
+      layout(paper_bgcolor = "#16213e", plot_bgcolor = "#16213e",
+             font = list(color = "#e2e8f0"),
+             margin = list(l = 130, r = 20, t = 20, b = 110))
   })
   
   # ---------------------------------------------------------------------------
