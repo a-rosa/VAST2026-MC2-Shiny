@@ -1,17 +1,3 @@
-# =============================================================================
-# TenantThread Forensics — Shiny App
-# ISSS608 Visual Analytics | VAST Challenge 2026 MC2
-#
-# TAB OWNERSHIP:
-#   Tab 1 — System Overview        → AMELIA
-#   Tab 2 — Attack Chain           → AMELIA
-#   Tab 3 — Campaign History       → TAM
-#   Tab 4 — Intervention Design    → TAM
-#
-# DATA: Place MC2 data.json and org_chart.json in a folder called
-#       "data/" inside this app directory before running.
-# =============================================================================
-
 library(shiny)
 library(shinydashboard)
 library(tidyverse)
@@ -26,11 +12,6 @@ library(scales)
 library(glue)
 
 `%||%` <- function(x, y) if (is.null(x)) y else x
-
-# =============================================================================
-# SHARED DATA LOADING & FEATURE ENGINEERING
-# (runs once on startup — all tabs draw from these objects)
-# =============================================================================
 
 # --- Load raw JSON ---
 events_df <- readRDS("data/events_df.rds")
@@ -439,6 +420,14 @@ ui <- dashboardPage(
       tabItem(tabName = "tab_overview",
               
               fluidRow(
+                box(width = 12, title = "Narrative Focus — Show the evidence",
+                    div(class = "finding-box",
+                        "This tab establishes the scope of the incident and highlights the evidence that makes it look abnormal. The goal is to show what happened, where it spread, and why the pattern is not ordinary business traffic."
+                    )
+                )
+              ),
+              
+              fluidRow(
                 infoBoxOutput("box_total_events", width = 3),
                 infoBoxOutput("box_worm_relays",  width = 3),
                 infoBoxOutput("box_anomaly_posts",width = 3),
@@ -518,6 +507,14 @@ ui <- dashboardPage(
       # TAB 2 — ATTACK CHAIN (AMELIA)
       # -----------------------------------------------------------------------
       tabItem(tabName = "tab_chain",
+              
+              fluidRow(
+                box(width = 12, title = "Narrative Focus — Analyze the mechanism",
+                    div(class = "finding-box",
+                        "This tab explains how the worm moved through the organization. It connects the relay events, the instruction files, and the final posts to show that the problem is a repeatable mechanism rather than a one-off mistake."
+                    )
+                )
+              ),
               
               fluidRow(
                 box(width = 12, title = "Five-Event Attack Sequence (SwiftWren, 17 May 2046)",
@@ -603,6 +600,14 @@ ui <- dashboardPage(
       # -----------------------------------------------------------------------
       tabItem(tabName = "tab_campaigns",
               fluidRow(
+                box(width = 12, title = "Narrative Focus — Compare the campaigns",
+                    div(class = "finding-box",
+                        "This tab compares HiddenOrca, MellowOtter, and SwiftWren to prove that the same propagation playbook recurs across different payloads and time windows. The pattern is persistent, which points to a structural weakness in the workflow."
+                    )
+                )
+              ),
+              
+              fluidRow(
                 box(width = 6, title = "Campaign Timeline",
                     plotlyOutput("plot_campaign_timeline", height = "320px"),
                     div(class = "finding-box",
@@ -659,6 +664,14 @@ ui <- dashboardPage(
       # TAB 4 — INTERVENTION DESIGN (TAM)
       # -----------------------------------------------------------------------
       tabItem(tabName = "tab_intervention",
+              fluidRow(
+                box(width = 12, title = "Narrative Focus — Design the defense",
+                    div(class = "finding-box",
+                        "This tab turns the forensic evidence into an intervention plan. The aim is to stop the relay before it starts, block the publication step, and contain any remaining spread by adding a cross-department control."
+                    )
+                )
+              ),
+              
               fluidRow(
                 box(width = 12, title = "Combined Intervention Design",
                     div(class = "callout-important",
@@ -1270,5 +1283,4 @@ server <- function(input, output, session) {
   
 }
 
-# =============================================================================
 shinyApp(ui, server)
