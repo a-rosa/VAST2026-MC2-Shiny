@@ -476,9 +476,10 @@ ui <- dashboardPage(
                 box(width = 8, title = "Daily Event Volume",
                     plotlyOutput("plot_daily_volume", height = "320px"),
                     div(class = "finding-box",
-                        "All three campaign dates (May 10, 11, 17) fall within the first 18 days.
-                   On each post date, total volume is indistinguishable from surrounding days —
-                   a threshold-based anomaly detector would have seen nothing unusual."
+                        "The early-May peak is ordinary business traffic — emails, meetings, and task
+                   assignments — not a worm signature. The worm's 235 relays are buried invisibly
+                   inside daily volume on every post date, so no volume-based or threshold detector
+                   would flag them even on the busiest days."
                     )
                 ),
                 box(width = 4, title = "SaidIT Post Attribution",
